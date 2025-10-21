@@ -37,20 +37,38 @@ const global = {
 }
 
 //DISPLAY FUNCTIONS
-async function displayMovies(){
-    const { results } = await fetchAPIData('movie/popular');
-    results.forEach(movie => {
-        let movieCard = createMediaCard(movie);
-        document.querySelector('#popular-movies').appendChild(movieCard); 
+async function displayPopularMedia(endpoint, mediatype){
+    const { results } = await fetchAPIData(endpoint);
+    results.forEach(media => {
+        let mediaCard = createMediaCard(media);
+        document.querySelector(`#popular-${mediatype}`).appendChild(mediaCard); 
     })
 }
 
+async function displayShows(){
+    const { results } = await fetchAPIData('tv/popular');
+    results.forEach
+}
+
+
 function createMediaCard(media) {
+        let hrefPrefix;
+        let releaseOrAirDate;
+        //Check if media is TV show or Movie
+
+        if(media.first_air_date) {
+            hrefPrefix = 'tv-details.html?id=' 
+            releaseOrAirDate = `Aired on: ${media.first_air_date}`
+        } else {
+            hrefPrefix = 'movie-details.html?id='
+            releaseOrAirDate = `Released: ${media.release_date}`
+        }
+
         let cardDiv = document.createElement('div');
         cardDiv.classList.add('card');
         
-        let movieAnchor = document.createElement('a');
-        movieAnchor.href = `movie-details.html?id=${media.id}`;
+        let mediaAnchor = document.createElement('a');
+        mediaAnchor.href = `${hrefPrefix}${media.id}`;
         
         let movieImage = document.createElement('img');
         movieImage.src = `${IMAGE_URL}${POSTER_SIZE}${media.poster_path}`;
@@ -69,12 +87,12 @@ function createMediaCard(media) {
         
         cardParagraph.classList.add('card-text');
         cardSmall.classList.add('text-muted');
-        cardSmall.textContent = `Release: ${media.release_date}`;
+        cardSmall.textContent = releaseOrAirDate;
         
         
         //Assembly
-        cardDiv.appendChild(movieAnchor);
-        movieAnchor.appendChild(movieImage);
+        cardDiv.appendChild(mediaAnchor);
+        mediaAnchor.appendChild(movieImage);
         cardDiv.appendChild(cardBodyDiv);
         cardBodyDiv.appendChild(cardHeader);
         cardBodyDiv.appendChild(cardParagraph);
@@ -86,7 +104,7 @@ function createMediaCard(media) {
 
 async function fetchAPIData(endpoint) {
     try{
-        const res = await fetch(`${API_URL}/${endpoint}?api_key=${API_KEY}&language=en-US&page=1`)
+        const res = await fetch(`${API_URL}/${endpoint}?api_key=${API_KEY}&language=en-US`)
         //Remember, catch does not account for 401s. You need to check the response for that
         if (!res.ok) {
             throw new Error(`HTTP Error. Status: ${res.status}`);
@@ -115,10 +133,10 @@ function init () {
         //You can use multi conditions by having multiple cases and only 1 block of execution under the last one
         case '/':
         case '/index.html':
-            displayMovies();
+            displayPopularMedia('movie/popular', 'movies');
             break;
         case '/shows.html':
-            console.log("TV Shows");
+            displayPopularMedia('tv/popular', 'shows')
             break;
         case '/movie-details.html':
             break;
