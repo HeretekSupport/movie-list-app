@@ -45,12 +45,6 @@ async function displayPopularMedia(endpoint, mediatype){
     })
 }
 
-async function displayShows(){
-    const { results } = await fetchAPIData('tv/popular');
-    results.forEach
-}
-
-
 function createMediaCard(media) {
         let hrefPrefix;
         let releaseOrAirDate;
