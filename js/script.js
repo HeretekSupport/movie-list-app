@@ -40,22 +40,22 @@ const global = {
 async function displayMovies(){
     const { results } = await fetchAPIData('movie/popular');
     results.forEach(movie => {
-        let movieCard = createMovieCard(movie);
+        let movieCard = createMediaCard(movie);
         document.querySelector('#popular-movies').appendChild(movieCard); 
     })
 }
 
-function createMovieCard(movie) {
+function createMediaCard(media) {
         let cardDiv = document.createElement('div');
         cardDiv.classList.add('card');
         
         let movieAnchor = document.createElement('a');
-        movieAnchor.href = `movie-details.html?id=${movie.id}`;
+        movieAnchor.href = `movie-details.html?id=${media.id}`;
         
         let movieImage = document.createElement('img');
-        movieImage.src = `${IMAGE_URL}${POSTER_SIZE}${movie.poster_path}`;
+        movieImage.src = `${IMAGE_URL}${POSTER_SIZE}${media.poster_path}`;
         movieImage.classList.add('card-img-top');
-        movieImage.alt = movie.title;
+        movieImage.alt = media.title;
         
         let cardBodyDiv = document.createElement('div');
         cardBodyDiv.classList.add('card-body');
@@ -65,11 +65,11 @@ function createMovieCard(movie) {
         let cardSmall = document.createElement('small');
         
         cardHeader.classList.add('card-title');
-        cardHeader.textContent = movie.title;
+        cardHeader.textContent = media.title;
         
         cardParagraph.classList.add('card-text');
         cardSmall.classList.add('text-muted');
-        cardSmall.textContent = `Release: ${movie.release_date}`;
+        cardSmall.textContent = `Release: ${media.release_date}`;
         
         
         //Assembly
