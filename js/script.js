@@ -45,6 +45,14 @@ async function displayPopularMedia(endpoint, mediatype){
     })
 }
 
+function showSpinner(toggle){
+    if (toggle) {
+        document.querySelector('.spinner').classList.add('show');
+    } else {
+        document.querySelector('.spinner').classList.remove('show');
+    }
+}
+
 function createMediaCard(media) {
         let hrefPrefix;
         let releaseOrAirDate;
@@ -97,6 +105,7 @@ function createMediaCard(media) {
 //FETCHING FUNCTIONS
 
 async function fetchAPIData(endpoint) {
+    showSpinner(true);
     try{
         const res = await fetch(`${API_URL}/${endpoint}?api_key=${API_KEY}&language=en-US`)
         //Remember, catch does not account for 401s. You need to check the response for that
@@ -104,6 +113,7 @@ async function fetchAPIData(endpoint) {
             throw new Error(`HTTP Error. Status: ${res.status}`);
         }
         const data = await res.json();
+        showSpinner(false);
         return data;
     }
     catch (error) {
