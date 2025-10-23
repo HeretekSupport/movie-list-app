@@ -134,6 +134,12 @@ const POSTER_SIZE = 'w500';
 
 const global = {
   currentPage: window.location.pathname,
+  search: {
+    term: '',
+    type: '',
+    page: 1,
+    totalPages: 1,
+  }
 };
 
 //DISPLAY FUNCTIONS
@@ -381,9 +387,11 @@ async function fetchAPIData(endpoint) {
   }
 }
 
+async function search(){
+  
+}
 
 // HELPER FUNCTIONS
-
 function getIdFromUrl(){
   const urlParams = new URLSearchParams(window.location.search); 
   return urlParams.get('id');
@@ -408,6 +416,7 @@ function init() {
       displayMediaDetails(`tv/${getIdFromUrl()}`, 'tv');
       break;
     case '/search.html':
+      search();
       break;
   }
   highlightActiveLink();
