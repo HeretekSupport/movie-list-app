@@ -124,8 +124,6 @@
 </div>
 */
 
-
-
 //VARS
 const API_KEY = '9ed438ce549f6811e4e4e68ba86e510c'; //Learning purposes only obviously. You'd have this in VAULT or Env var otherwise while using node.js
 const API_URL = 'https://api.themoviedb.org/3';
@@ -139,7 +137,7 @@ const global = {
     type: '',
     page: 1,
     totalPages: 1,
-  }
+  },
 };
 
 //DISPLAY FUNCTIONS
@@ -172,7 +170,17 @@ function highlightActiveLink() {
     `a.nav-link[href="${global.currentPage}"]`
   );
   link ? link.classList.add('active') : null;
-  
+}
+
+function showEmptySearchAlert(message, className) {
+  const alertElement = document.createElement('div');
+  alertElement.classList.add('alert', className);
+  alertElement.appendChild(document.createTextNode(message));
+  document.querySelector('#alert').appendChild(alertElement);
+
+  setTimeout(() => {
+    alertElement.remove();
+  }, 3000);
 }
 
 /**Creates a picture card with release date and title details to display all the popular media (either movies or tv shows).
@@ -322,9 +330,7 @@ function createShowDetailCard(show) {
           <i class="fas fa-star text-primary"></i>
           ${show.vote_average ? show.vote_average.toFixed(1) : 'N/A'} / 10
         </p>
-        <p class="text-muted">Release Date: ${
-          show.first_air_date || 'N/A'
-        }</p>
+        <p class="text-muted">Release Date: ${show.first_air_date || 'N/A'}</p>
         <p>
           ${show.overview || 'No description available.'}
         </p>
@@ -387,13 +393,47 @@ async function fetchAPIData(endpoint) {
   }
 }
 
-async function search(){
-  
+async function searchAPIData(mediaType, searchTerm) {
+  showSpinner(true);
+  try {
+    const res = await fetch(
+      `${API_URL}/search/${mediaType}?api_key=${API_KEY}&language=en-US&query=${searchTerm}`
+    );
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error. Status: ${res.status}`);
+    }
+    const data = await res.json();
+    showSpinner(false);
+    return data;
+  } catch (error) {
+    throw new Error(`Couldn't fetch data. Error: ${error}`);
+  }
+}
+
+async function search() {
+  const queryString = new URLSearchParams(window.location.search);
+  global.search.type = queryString.get('type');
+  global.search.term = queryString.get('search-term');
+
+  if (global.search.term !== '' && global.search.term !== null) {
+    const { results } = await searchAPIData(
+      global.search.type,
+      global.search.term
+    );
+
+    results.forEach((result) => {
+      let mediaCard = createMediaCard(result);
+      document.querySelector('#search-results').appendChild(mediaCard);
+    });
+  } else {
+    showEmptySearchAlert('Nothing to search for', 'error');
+  }
 }
 
 // HELPER FUNCTIONS
-function getIdFromUrl(){
-  const urlParams = new URLSearchParams(window.location.search); 
+function getIdFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get('id');
 }
 
@@ -412,7 +452,7 @@ function init() {
     case '/movie-details.html':
       displayMediaDetails(`movie/${getIdFromUrl()}`, 'movie');
       break;
-      case '/tv-details.html':
+    case '/tv-details.html':
       displayMediaDetails(`tv/${getIdFromUrl()}`, 'tv');
       break;
     case '/search.html':
