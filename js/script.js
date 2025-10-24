@@ -425,6 +425,8 @@ async function search() {
     results.forEach((result) => {
       let mediaCard = createMediaCard(result);
       document.querySelector('#search-results').appendChild(mediaCard);
+      document.querySelector('#search-results').appendChild(mediaCard);
+
     });
   } else {
     showEmptySearchAlert('Nothing to search for', 'error');
