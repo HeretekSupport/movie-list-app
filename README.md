@@ -1,1 +1,1 @@
-![Alt Text](./images/Demo.png)
+![Movie App Demo Image](./images/Demo.png)
