@@ -1,5 +1,5 @@
 //VARS
-const API_KEY = '9ed438ce549f6811e4e4e68ba86e510c'; //Learning purposes only obviously. You'd have this in VAULT or Env var otherwise while using node.js
+const API_KEY = '9ed438ce549f6811e4e4e68ba86e510c'; //Learning purposes only obviously. You'd have this in VAULT or Env var otherwise while using node.js //THIS IS NOT A VALID KEY, use your own here
 const API_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/';
 const POSTER_SIZE = 'w500';
